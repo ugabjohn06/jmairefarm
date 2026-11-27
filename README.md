@@ -4,7 +4,7 @@ A web-based reservation and management system for **J'Maire Farm**, a farm resor
 
 This was built as a student project. The rates, bookings and accounts included are demo data.
 
-**Documents:** [User Manual (PDF)](J%27Maire%20Farm%20System%20User%20Manual.pdf) · [Presentation (PDF)](J%27Maire%20Farm%20System%20Presentation.pdf)
+**Documents:** [Demo Video (Google Drive)](https://drive.google.com/file/d/1D9RCR5dg2RLgoo5CLLTj3GF3LLRMPL8C/view?usp=sharing) · [User Manual (PDF)](J%27Maire%20Farm%20System%20User%20Manual.pdf) · [Presentation (PDF)](J%27Maire%20Farm%20System%20Presentation.pdf)
 
 ## Purpose
 
