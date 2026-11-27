@@ -75,12 +75,6 @@ The old root files `dashboard.php`, `menu_list.php`, `menu_edit.php`, `menu_dele
 
 **Email.** XAMPP can't send email out of the box, so every email (booking received, confirmed, receipt rejected, cancelled, expired, password reset) is saved to **Admin → Email log**, which is handy for the demo. Set `MAIL_ENABLED` to `true` in `config.local.php` once SMTP is configured.
 
-## Decisions to confirm with the owner (plan section 2)
-
-- **Unit counts.** The seed has 2 Open Cottages, 2 Kalesa tables and 2 Deluxe Rooms as examples. Add or remove units in Admin → Accommodations.
-- **Add-on prices** are placeholders, because the menu lists activities without prices.
-- Downpayment %, payment deadline, GCash/bank details, entrance/swimming fees, hours and cancellation policy are all in **Admin → Settings**.
-
 ## Test checklist status (plan section 13)
 
 All of these were run end to end against the demo data: overlap blocked, past date / end-before-start / over-capacity rejected, same-day turnover allowed, server total correct, txt / fake-PNG / oversized receipts rejected, approve → confirmed + email, reject requires a reason and the guest sees it, unpaid booking auto-expires and frees dates, guest can't open another guest's booking or `/admin`, staff can't open users or reports, walk-in + check-out with balance, reschedule recalculates price, CSV export. Still to do on your XAMPP: the **two browsers at the same time** test (needs real MySQL), plus checking that `http://localhost/<your-folder>/uploads/receipts/demo_receipt.png` returns *403 Forbidden*.
