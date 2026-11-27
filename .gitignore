@@ -1,0 +1,24 @@
+# Settings for one computer only (see config.local.example.php)
+config.local.php
+
+# Uploaded files: keep the folders, their .htaccess, the bundled unit photos and the demo receipt
+uploads/receipts/*
+!uploads/receipts/.htaccess
+!uploads/receipts/demo_receipt.png
+uploads/accommodations/*
+!uploads/accommodations/.htaccess
+!uploads/accommodations/unit_*.jpg
+
+# User manual: kept outside the repo for now
+docs/
+
+# Editor settings
+.vscode/
+.idea/
+
+# OS clutter and archives
+.DS_Store
+Thumbs.db
+desktop.ini
+*.zip
+*.log
