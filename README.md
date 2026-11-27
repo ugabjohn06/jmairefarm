@@ -1,84 +1,102 @@
-# J'Maire Farm Reservation System
+# J'Maire Farm Online Reservation and Management System
 
-Online booking for J'Maire Farm: guests pick a cottage or room, see the full price, book, and upload their GCash/bank receipt. Staff verify receipts, handle walk-ins and check guests in and out. The owner manages rates and sees income and occupancy reports.
+A web-based reservation and management system for **J'Maire Farm**, a farm resort in Brgy. Sibaguan, Lambunao, Iloilo. Guests can see which cottages and rooms are free, book online, and upload their downpayment receipt. The front desk confirms payments, records walk-ins and checks guests in and out. The owner sets rates and rules and reads income and occupancy reports.
 
-Built with plain **PHP 8.2 + MySQL (XAMPP)** and Bootstrap 5, with Chart.js and FullCalendar for the reports and calendar. Bootstrap, its icons, Chart.js and FullCalendar are included in `assets/`. Only the Figtree font (Google Fonts) and the Flatpickr date picker (CDN) load from the internet; without a connection the site still works with the system font and plain date fields.
+This was built as a student project. The rates, bookings and accounts included are demo data.
 
-## Setup (XAMPP)
+**Documents:** [User Manual (PDF)](J%27Maire%20Farm%20System%20User%20Manual.pdf) · [Presentation (PDF)](J%27Maire%20Farm%20System%20Presentation.pdf)
 
-1. Clone or copy this repository into `C:\xampp\htdocs\`. Any folder name works; this guide uses `j-maire_farm_rsrv_sys`:
+## Purpose
+
+The system keeps every booking, payment and unit in one place. It checks availability automatically so a cottage or room is never promised twice, shows the front desk exactly which downpayments still need checking, and gives the owner an up-to-date view of income and occupancy.
+
+## Features
+
+**For guests (public website)**
+- Browse day cottages and overnight rooms with photos, capacity and rates, and check which dates are free
+- Book online with a live price summary (unit, entrance fees, swimming, add-ons and food pre-orders)
+- Pay a 50% downpayment by GCash or bank transfer and upload the receipt
+- View, cancel and print bookings from "My bookings"
+- Look up a walk-in or phone booking with the booking code and mobile number
+
+**For front desk staff**
+- Dashboard with today's arrivals, departures and receipts waiting for review
+- Approve or reject payment receipts
+- Create walk-in bookings, check guests in and out, and record the balance paid
+- Reschedule, cancel or reject bookings, with a reason recorded
+- Calendar of every unit, guest history and a log of all emails sent
+
+**For the owner (admin)**
+- Reports on income, bookings and occupancy by month, unit and payment method, with CSV export
+- Manage cottages and rooms (photos, rates, capacity), add-ons with daily stock, and the farm menu
+- Settings for contact details, downpayment percentage, payment deadline, fees and payment accounts
+- Staff accounts and roles, and an audit log of every important action
+
+## How it works
+
+- **No double booking.** A unit can have only one active booking for any day. The availability check and the save happen together, so two guests clicking "Book" at the same moment cannot both get the same date.
+- **Prices are calculated on the server.** The price summary on the form and the saved total come from the same calculation. Each booking keeps a copy of its prices, so later rate changes don't affect bookings already made.
+- **Booking status.** Pending → Confirmed (downpayment verified) → Checked in → Completed (fully paid). A pending booking that gets no receipt within the payment deadline (24 hours by default) expires and frees the date.
+- **Security.** Passwords are hashed, every form is protected against cross-site request forgery, all database queries use prepared statements, and uploaded receipts are checked by file content and can only be viewed by staff or the guest who uploaded them.
+
+## Built with
+
+- PHP 8.2 and MySQL / MariaDB (XAMPP)
+- Bootstrap 5 and Bootstrap Icons
+- Chart.js (reports) and FullCalendar (calendar)
+- Flatpickr (date picker) and the Figtree font from Google Fonts
+
+## Running it locally
+
+**Requirements:** Windows with [XAMPP](https://www.apachefriends.org/) (PHP 8.2) and a modern browser. An internet connection is needed only for the font and the date picker.
+
+1. Clone the repository into XAMPP's `htdocs` folder:
    ```
    cd C:\xampp\htdocs
-   git clone <repository-url> j-maire_farm_rsrv_sys
+   git clone https://github.com/ugabjohn06/jmairefarm.git
    ```
-2. Start **Apache** and **MySQL** in the XAMPP Control Panel.
-3. Open http://localhost/phpmyadmin and **Import** these two files, in this order:
-   1. `database/01_jmaire_farm_db.sql` (creates the `jmaire_farm` database and the menu: food, rooms & cottages, activities)
-   2. `database/02_reservation_system.sql` (users, accommodations, bookings, payments, settings + demo data)
+2. Open the XAMPP Control Panel and start **Apache** and **MySQL**.
+3. Go to http://localhost/phpmyadmin, open the **Import** tab, and import these two files in order:
+   1. `database/01_jmaire_farm_db.sql`
+   2. `database/02_reservation_system.sql`
+4. Open http://localhost/jmairefarm/
 
-   If a `jmaire_farm` database already exists from an earlier version, drop it first; these files create their tables from scratch. (`03_admin_controls.sql` is only for upgrading an old database in place; fresh installs don't need it.)
-4. Open http://localhost/j-maire_farm_rsrv_sys/ (use your folder name).
+If MySQL on your computer has a password, copy `config.local.example.php` to `config.local.php` and set `DB_PASS` there.
 
-The unit photos ship in `uploads/accommodations/`, so cottages and rooms show their pictures straight away.
-
-**Optional: a year of sample data.** To fill the reports and dashboards with 2025 bookings, payments and guests, run this once from the project folder (and `--remove` to take it out again):
+**Optional sample data:** to fill the reports with a full year of 2025 bookings, run this from the project folder:
 ```
 C:\xampp\php\php.exe -d extension=gd database\seed_demo_2025.php
-C:\xampp\php\php.exe database\seed_demo_2025.php --remove
 ```
-
-### Local settings
-
-`config.php` holds defaults that work on a standard XAMPP install (MySQL user `root`, no password, database `jmaire_farm`). To change something on your computer only, such as a MySQL password, copy `config.local.example.php` to `config.local.php` and set it there. `config.local.php` is ignored by git.
+Add `--remove` to take the sample data out again.
 
 ### Demo accounts
 
-| Role | Login | Password |
+| Role | Log in with | Password |
 |---|---|---|
-| Admin / owner | `admin` | `admin123` |
-| Staff | `staff` | `staff123` |
+| Owner (admin) | `admin` | `admin123` |
+| Front desk (staff) | `staff` | `staff123` |
 | Guest | `guest@example.com` | `guest123` |
-| Guest | `maria@example.com` | `guest123` |
 
-Change these before showing the system to anyone outside the team. Demo booking dates are relative to the day you import, so the dashboard always has something on it.
+Staff and the owner sign in through the same login page and are taken to the admin panel.
 
-## What's where
+## Project structure
 
-| Path | What it is |
+| Folder / file | Contents |
 |---|---|
-| `index.php`, `accommodations.php`, `accommodation.php`, `menu.php` | Public pages |
-| `book.php` → `booking.php` | Booking form → summary, payment instructions, receipt upload, cancel |
-| `my_bookings.php`, `find_booking.php` | Guest's bookings; lookup by code + phone (for walk-ins without an account) |
-| `login.php`, `register.php`, `forgot_password.php`, `reset_password.php`, `profile.php` | Accounts |
-| `receipt.php` | Printable receipt (Print → Save as PDF) |
-| `admin/` | Staff/owner side: dashboard, bookings, walk-in, calendar, guests, reports, accommodations, add-ons, farm menu, settings, users, audit log, email log |
-| `includes/booking_service.php` | **All booking rules**: overlap check, price calculation, status flow, expiry, payments |
-| `includes/booking_form.php` + `assets/js/booking.js` | Shared booking form (guest + walk-in) with live price preview |
-| `api/quote.php`, `api/availability.php` | JSON used by the form and calendars |
-| `cron/expire_bookings.php` | Optional scheduled expiry (see below) |
+| `index.php`, `accommodations.php`, `menu.php` | Public website |
+| `book.php`, `booking.php`, `my_bookings.php`, `find_booking.php` | Guest booking, payment and booking history |
+| `admin/` | Staff and owner panel |
+| `includes/booking_service.php` | Booking rules: availability, pricing, status changes, payments |
+| `api/` | Live price and availability lookups used by the booking form |
+| `database/` | SQL files and the optional sample-data script |
+| `assets/` | Styles, scripts, images and bundled libraries |
+| `uploads/` | Unit photos and uploaded receipts |
 
-The old root files `dashboard.php`, `menu_list.php`, `menu_edit.php`, `menu_delete.php` now just redirect to `admin/`, so old bookmarks keep working. You can delete them if nobody uses those addresses.
+## Development team
 
-## How the important parts work (plan section 8)
+- [Team member name], [role]
+- [Team member name], [role]
+- [Team member name], [role]
+- [Team member name], [role]
 
-**No double booking.** Dates are stored as a half-open range `[check_in, check_out)`. Overnight rooms: `check_out` is the morning the guest leaves, so one guest can check out the same day the next checks in. Day cottages: `check_out = check_in + 1 day`. Two bookings clash when `a.check_in < b.check_out AND a.check_out > b.check_in`, counting only `pending`, `confirmed` and `checked_in`. `create_booking()` runs the check and the insert in one transaction after `SELECT ... FOR UPDATE` on the accommodation row, so two people clicking Book at the same moment are handled one after the other.
-
-**Price.** `calculate_quote()` computes rate × days/nights, entrance fees (adults/kids) for day cottages, optional swimming, add-ons and food pre-orders. Overnight rooms include entrance, swimming and breakfast. The form's live price calls the same function through `api/quote.php`, so the preview always equals the saved total. Every line is copied into `booking_items`, so later rate changes never alter old bookings.
-
-**Status flow.** pending → confirmed (when verified payments ≥ downpayment) → checked_in → completed (only when fully paid). Pending can also become cancelled, rejected or expired; confirmed can be cancelled. Cancel and reject require a reason.
-
-**Expiry.** Unpaid pending bookings expire after `payment_deadline_hours` (Settings, default 24h) and free their dates. This runs on every page load. Bookings whose receipt is waiting for review don't expire. Rejecting a receipt gives the guest a fresh window to re-upload. For a scheduled job, use Windows Task Scheduler every 15 minutes with program `C:\xampp\php\php.exe` and argument `C:\xampp\htdocs\j-maire_farm_rsrv_sys\cron\expire_bookings.php` (use your folder name).
-
-**Receipts.** Only JPG/PNG/PDF up to 5 MB are accepted. The type is checked from the file content, not the extension. Files get random names in `uploads/receipts/`, which `.htaccess` blocks. They are served only through `receipt_file.php` to staff or the booking's owner.
-
-**Access.** Guests see only their own bookings. `/admin` needs staff. Rates, settings, users, reports and the audit log need admin. Every form has a CSRF token, all SQL uses prepared statements, and output is escaped with `e()`.
-
-**Email.** XAMPP can't send email out of the box, so every email (booking received, confirmed, receipt rejected, cancelled, expired, password reset) is saved to **Admin → Email log**, which is handy for the demo. Set `MAIL_ENABLED` to `true` in `config.local.php` once SMTP is configured.
-
-## Test checklist status (plan section 13)
-
-All of these were run end to end against the demo data: overlap blocked, past date / end-before-start / over-capacity rejected, same-day turnover allowed, server total correct, txt / fake-PNG / oversized receipts rejected, approve → confirmed + email, reject requires a reason and the guest sees it, unpaid booking auto-expires and frees dates, guest can't open another guest's booking or `/admin`, staff can't open users or reports, walk-in + check-out with balance, reschedule recalculates price, CSV export. Still to do on your XAMPP: the **two browsers at the same time** test (needs real MySQL), plus checking that `http://localhost/<your-folder>/uploads/receipts/demo_receipt.png` returns *403 Forbidden*.
-
-## Design
-
-The look ("Seed Packet") lives in `assets/css/app.css`: a forest-green field taken from the logo, white work surfaces on a light-grey ground, and one type family, Figtree. Sun orange is kept for things that need action now (the "Book a visit" button, receipts to check, Review buttons). The logo files in `assets/img/` (`logo-green.png`, `logo-white.png`, `logo-mark.png`) are trimmed copies of the originals in `photos/`. Motion is limited to the home-page hero and a slight photo zoom on hover, and both turn off when the visitor's system asks for reduced motion.
+[School, course and adviser]
