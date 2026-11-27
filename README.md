@@ -95,7 +95,7 @@ Staff and the owner sign in through the same login page and are taken to the adm
 ## Development team
 
 - Brent Dela Cruz
-James Dian Bornales
-Ethan Tyler Razalan
-Vin Rechnell Sandig
-Gabriel John Uy
+- James Dian Bornales
+- Ethan Tyler Razalan
+- Vin Rechnell Sandig
+- Gabriel John Uy
